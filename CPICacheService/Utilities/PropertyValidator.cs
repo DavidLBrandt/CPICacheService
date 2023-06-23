@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace CPICacheService.Utilities
 {
-    public static class PropertyValidator
+    public class PropertyValidator : IPropertyValidator
     {
-        public static bool IsValidSeriesIdFormat(string value)
+        public bool IsValidSeriesIdFormat(string value)
         {
             // The series ID(s) can include underscore (_), dash (-) and hash (#)
             // but must not include lower case letters or special characters.
@@ -13,7 +13,7 @@ namespace CPICacheService.Utilities
                 && Regex.IsMatch(value, @"^[A-Z0-9_\-#]+$");
         }
 
-        public static bool IsValidYear(string value)
+        public bool IsValidYear(string value)
         {
             // Consumer Price Index (CPI) has data available from
             // as early as 1913, which is the inception of the CPI.
@@ -37,14 +37,14 @@ namespace CPICacheService.Utilities
             return true;
         }
 
-        public static bool IsValidMonth(string value)
+        public bool IsValidMonth(string value)
         {
             string[] formats = { "MMMM" };
             return DateTime.TryParseExact(
-                value, 
-                formats, 
-                CultureInfo.CurrentCulture, 
-                DateTimeStyles.None, 
+                value,
+                formats,
+                CultureInfo.CurrentCulture,
+                DateTimeStyles.None,
                 out DateTime dummyDate);
         }
     }

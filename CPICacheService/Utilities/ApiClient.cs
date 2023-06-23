@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Text;
 
 namespace CPICacheService.Utilities
 {
-    public class ApiClient
+    public class ApiClient : IApiClient
     {
         private readonly HttpClient httpClient;
 
@@ -11,20 +12,42 @@ namespace CPICacheService.Utilities
             httpClient = new HttpClient();
         }
 
-        //public async Task<List<MyObject>> GetMyObjectsAsync(string url)
-        //{
-        //    HttpResponseMessage response = await httpClient.GetAsync(url);
+        public async Task<string> CallApi(string seriesIds, string startYear, string endYear, IPropertyValidator validator)
+        {
+            if (!validator.IsValidSeriesIdFormat(seriesIds))
+                throw new ArgumentException("Invalid seriesIds.");
 
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        string json = await response.Content.ReadAsStringAsync();
-        //        List<MyObject> myObjects = JsonConvert.DeserializeObject<List<MyObject>>(json);
-        //        return myObjects;
-        //    }
+            if (!validator.IsValidYear(startYear))
+                throw new ArgumentException("Invlaid startYear.");
 
-        //    // Handle error cases
-        //    response.EnsureSuccessStatusCode();
-        //    return null;
-        //}
+            if (!validator.IsValidYear(endYear))
+                throw new ArgumentException("Invlaid endYear.");
+
+            string apiUrl = "https://api.bls.gov/publicAPI/v1/timeseries/data/";
+
+            var payload = new
+            {
+                seriesid = new string[] { seriesIds },
+                startyear = startYear,
+                endyear = endYear
+            };
+
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await httpClient.PostAsync(apiUrl, content);
+                response.EnsureSuccessStatusCode();
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                return jsonResponse;
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error: " + ex.Message);
+                return string.Empty;
+            }
+        }
     }
 }

@@ -1,0 +1,37 @@
+﻿using CPICacheService.Models;
+using CPICacheService.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CPICacheServiceTests
+{
+    [TestClass]
+    public class ApiClientTests
+    {
+        [TestMethod]
+        public void TestMethod1()
+        {
+            IApiClient apiClient = new MockApiClient();
+            //IApiClient apiClient = new ApiClient();
+
+            string seriesIds = "LAUCN040010000000005";
+            string startYear = "2014";
+            string endYear = "2023";
+            string json = apiClient.CallApi(
+                seriesIds: seriesIds,
+                startYear: startYear,
+                endYear: endYear,
+                validator: new PropertyValidator()
+                ).GetAwaiter().GetResult();
+
+            List<ApiResponse> apiResponses =  new ApiResponseConverter().ConvertFromJson(json);
+
+            Assert.IsTrue(json.Contains("REQUEST_SUCCEEDED")); // Check that the BLS Public Data API returned success
+            Assert.IsTrue(apiResponses.Any(r => r.Cpis.Count > 0)); // Check that any CPI data was returned
+        }
+    }
+}

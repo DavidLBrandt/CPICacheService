@@ -14,13 +14,14 @@ namespace CPICacheService.Controllers
         [HttpGet("{seriesid}/{year}/{month}")]
         public ActionResult<Cpi> Get(string seriesid, string year, string month)
         {
-            if (!PropertyValidator.IsValidSeriesIdFormat(seriesid))
+            IPropertyValidator validator = new PropertyValidator();
+            if (!validator.IsValidSeriesIdFormat(seriesid))
                 return BadRequest("Invalid series id format.");
 
-            if (!PropertyValidator.IsValidYear(year))
+            if (!validator.IsValidYear(year))
                 return BadRequest("Invalid year format.");
 
-            if (!PropertyValidator.IsValidMonth(month))
+            if (!validator.IsValidMonth(month))
                 return BadRequest("Invalid month format.");
 
             Cpi response = new Cpi { 

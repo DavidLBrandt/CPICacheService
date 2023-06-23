@@ -4,16 +4,15 @@ using System.Diagnostics;
 
 namespace CPICacheService.Utilities
 {
-    public static class ApiJsonConverter
+    public class ApiResponseConverter : IApiResponseConverter
     {
-        public static List<ApiResponse> ConvertFromJson(string json)
+        public List<ApiResponse> ConvertFromJson(string json)
         {
             List<ApiResponse> apiResponses = new List<ApiResponse>();
-            //string json = MockApi.Response;
+
             JObject jsonObject = JObject.Parse(json);
 
             string status = (string?)jsonObject["status"] ?? "";
-
             if (status == "REQUEST_SUCCEEDED")
             {
                 JToken? seriesToken = jsonObject["Results"]?["series"];
@@ -21,7 +20,8 @@ namespace CPICacheService.Utilities
                 {
                     foreach (JToken series in seriesToken)
                     {
-                        ApiResponse apiResponse = new ApiResponse { 
+                        ApiResponse apiResponse = new ApiResponse
+                        {
                             status = status,
                         };
 
@@ -31,18 +31,32 @@ namespace CPICacheService.Utilities
 
                             foreach (JToken data in dataToken)
                             {
-                                Cpi cpi = new Cpi { 
+                                Cpi cpi = new Cpi
+                                {
                                     SeriesId = (string?)series["seriesID"] ?? string.Empty,
                                     month = (string?)data["periodName"] ?? string.Empty,
                                     year = (string?)data["year"] ?? string.Empty,
-                                    value = (int?)data["year"] ?? 0
+                                    value = (int?)data["value"] ?? 0
                                 };
 
-                                throw new Exception("Need to harvest any notes for the CPI.");
+                                JToken? notesToken = data["footnotes"];
+                                if (notesToken != null && notesToken.Type == JTokenType.Array)
+                                {
+                                    foreach (JToken note in notesToken)
+                                    {
+                                        string? text = (string?)note["text"];
+                                        if (!string.IsNullOrEmpty(text))
+                                        {
+                                            cpi.Notes.Add(text);
+                                        }
+                                    }
+                                }
 
-                                apiResponses.Add(apiResponse);
+                                apiResponse.Cpis.Add(cpi);
                             }
                         }
+
+                        apiResponses.Add(apiResponse);
                     }
                 }
 

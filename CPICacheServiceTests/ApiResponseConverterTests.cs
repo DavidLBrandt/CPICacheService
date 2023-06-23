@@ -8,16 +8,12 @@ using System.Collections.Generic;
 namespace CPICacheServiceTests
 {
     [TestClass]
-    public class UnitTest1
+    public class ApiResponseConverterTests
     {
         [TestMethod]
         public void TestMethod1()
         {
-            Trace.Listeners.Add(new ConsoleTraceListener());
 
-            ApiJsonConverter.ConvertFromJson(MockApi.ResponseJson);
-
-            Trace.WriteLine("TBD");
             Assert.IsNotNull(null);
         }
     }
