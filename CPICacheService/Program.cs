@@ -8,6 +8,9 @@ namespace CPICacheService
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Set port to 5000
+            builder.WebHost.UseUrls("http://localhost:5000");
+
             // Add services to the container.
             builder.Services.AddControllers();
 
