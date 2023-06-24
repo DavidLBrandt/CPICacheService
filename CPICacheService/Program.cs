@@ -7,8 +7,11 @@ namespace CPICacheService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
+
+            // Add caching services
+            builder.Services.AddMemoryCache();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -23,7 +26,6 @@ namespace CPICacheService
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

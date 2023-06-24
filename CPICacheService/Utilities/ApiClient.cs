@@ -12,10 +12,10 @@ namespace CPICacheService.Utilities
             httpClient = new HttpClient();
         }
 
-        public async Task<string> CallApi(string seriesIds, string startYear, string endYear, IPropertyValidator validator)
+        public async Task<string> GetCpiJson(string seriesId, string startYear, string endYear, IPropertyValidator validator)
         {
-            if (!validator.IsValidSeriesIdFormat(seriesIds))
-                throw new ArgumentException("Invalid seriesIds.");
+            if (!validator.IsValidSeriesIdFormat(seriesId))
+                throw new ArgumentException("Invalid seriesId.");
 
             if (!validator.IsValidYear(startYear))
                 throw new ArgumentException("Invlaid startYear.");
@@ -27,7 +27,7 @@ namespace CPICacheService.Utilities
 
             var payload = new
             {
-                seriesid = new string[] { seriesIds },
+                seriesid = new string[] { seriesId },
                 startyear = startYear,
                 endyear = endYear
             };

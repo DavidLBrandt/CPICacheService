@@ -13,15 +13,15 @@ namespace CPICacheServiceTests
     public class ApiClientTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void CallApi_RequestSucceeded_ReturnsApiResponse()
         {
-            IApiClient apiClient = new MockApiClient();
-            //IApiClient apiClient = new ApiClient();
+            IApiClient apiClient = new MockApiClient(); // Test using mock data without hitting the BLS Public Data API
+            //IApiClient apiClient = new ApiClient(); // Test using real data from the BLS Public Data API
 
             string seriesIds = "LAUCN040010000000005";
             string startYear = "2014";
             string endYear = "2023";
-            string json = apiClient.CallApi(
+            string json = apiClient.GetCpiJson(
                 seriesIds: seriesIds,
                 startYear: startYear,
                 endYear: endYear,

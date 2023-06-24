@@ -2,6 +2,6 @@
 {
     public interface IApiClient
     {
-        Task<string> CallApi(string seriesIds, string startYear, string endYear, IPropertyValidator validator);
+        Task<string> GetCpiJson(string seriesIds, string startYear, string endYear, IPropertyValidator validator);
     }
 }
