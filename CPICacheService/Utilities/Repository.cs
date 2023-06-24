@@ -1,10 +1,8 @@
 ﻿using CPICacheService.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
 
 namespace CPICacheService.Utilities
 {
-    public class Repository
+    public class Repository : IRepository
     {
         private readonly IApiClient _apiClient;
         private readonly ICacheClient _cacheClient;
@@ -12,10 +10,11 @@ namespace CPICacheService.Utilities
         private readonly IApiResponseConverter _responseConverter;
 
         public Repository(
-            IApiClient apiClient, 
-            ICacheClient cacheClient, 
+            IApiClient apiClient,
+            ICacheClient cacheClient,
             IPropertyValidator validator,
-            IApiResponseConverter responseConverter) {
+            IApiResponseConverter responseConverter)
+        {
 
             _apiClient = apiClient;
             _cacheClient = cacheClient;
@@ -25,28 +24,32 @@ namespace CPICacheService.Utilities
 
         public async Task<Cpi> GetCpi(string seriesId, string year, string month)
         {
-            if (!_validator.IsValidSeriesIdFormat(seriesId))
-                throw new ArgumentException("Invalid seriesIds.");
-
-            if (!_validator.IsValidYear(year))
-                throw new ArgumentException("Invlaid startYear.");
-
-            if (!_validator.IsValidYear(month))
-                throw new ArgumentException("Invlaid endYear.");
-            
             Cpi cpi;
 
-            // Try to get Cpi from cache, return if found
-            cpi = _cacheClient.GetCpi(seriesId, year, month);
-            if (cpi != null)
-            {
-                return cpi;
-            }
+            // Validate arguments
+            ValidateArguments(seriesId, year, month);
 
-            // Get Cpi from Api and store in cache
+            // Try to get Cpi from cache, return it if found
+            cpi = _cacheClient.GetCpi(seriesId, year, month);
+            if (cpi != null) return cpi;
+
+            // Import Cpi from API and cache it
             await ImportCpiToCacheFromApi(seriesId, year);
 
-            return cpi;
+            // Return Cpi from cache
+            return _cacheClient.GetCpi(seriesId, year, month);
+        }
+
+        private void ValidateArguments(string seriesId, string year, string month)
+        {
+            if (!_validator.IsValidSeriesIdFormat(seriesId))
+                throw new ArgumentException("Invalid seriesId.");
+
+            if (!_validator.IsValidYear(year))
+                throw new ArgumentException("Invlaid year.");
+
+            if (!_validator.IsValidMonth(month))
+                throw new ArgumentException("Invlaid month.");
         }
 
         private async Task ImportCpiToCacheFromApi(string seriesId, string year)
@@ -58,7 +61,11 @@ namespace CPICacheService.Utilities
             // A decade is the maximum we can pull.  This reduces the number of calls to the Api.
             string json = await _apiClient.GetCpiJson(seriesId, startYear, endYear, _validator);
 
+            // Convert raw JSON to a list of ApiResponse objects
             List<ApiResponse> apiResponses = _responseConverter.ConvertFromJson(json);
+
+            // Cache the Cpi data from ApiResponse objects
+            CacheApiResponses(apiResponses);
         }
 
         private void CacheApiResponses(List<ApiResponse> apiResponses)

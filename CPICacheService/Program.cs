@@ -1,3 +1,5 @@
+using CPICacheService.Utilities;
+
 namespace CPICacheService
 {
     public class Program
@@ -11,6 +13,16 @@ namespace CPICacheService
 
             // Add caching services
             builder.Services.AddMemoryCache();
+
+            // Register the IRepository service and its dependencies
+            builder.Services.AddScoped<IRepository, Repository>();
+
+            builder.Services.AddScoped<IApiClient, MockApiClient>();
+            //builder.Services.AddScoped<IApiClient, ApiClient>();
+
+            builder.Services.AddScoped<ICacheClient, CacheClient>();
+            builder.Services.AddScoped<IPropertyValidator, PropertyValidator>();
+            builder.Services.AddScoped<IApiResponseConverter, ApiResponseConverter>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

@@ -27,13 +27,6 @@ namespace CPICacheService.Utilities
             if (!int.TryParse(value, out int year))
                 return false;
 
-            // Get the current year
-            int currentYear = DateTime.Now.Year;
-
-            // Validate the year range
-            if (year < 1913 || year > currentYear)
-                return false;
-
             return true;
         }
 
