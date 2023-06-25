@@ -19,12 +19,7 @@ namespace CPICacheService
 
             // Register the IRepository service and its dependencies
             builder.Services.AddScoped<IRepository, Repository>();
-
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            builder.Services.AddScoped<IApiClient, MockApiClient>();
-            //builder.Services.AddScoped<IApiClient, ApiClient>();
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
+            builder.Services.AddScoped<IApiClient, ApiClient>();
             builder.Services.AddScoped<ICacheClient, CacheClient>();
             builder.Services.AddScoped<IPropertyValidator, PropertyValidator>();
             builder.Services.AddScoped<IApiResponseConverter, ApiResponseConverter>();
