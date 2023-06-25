@@ -2,10 +2,7 @@
 using CPICacheService.Models;
 using CPICacheService.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Threading.Tasks;
 
 namespace CPICacheServiceTests
 {

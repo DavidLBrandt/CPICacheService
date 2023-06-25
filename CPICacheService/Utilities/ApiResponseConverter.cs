@@ -1,6 +1,5 @@
 ﻿using CPICacheService.Models;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace CPICacheService.Utilities
 {
