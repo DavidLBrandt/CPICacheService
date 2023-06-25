@@ -1,4 +1,6 @@
-﻿namespace CPICacheService.Utilities
+﻿// MockApiClient was used during development to support iterations without exceeding the BLS Api max query limit of 25
+
+namespace CPICacheService.Utilities
 {
     public class MockApiClient : IApiClient
     {
