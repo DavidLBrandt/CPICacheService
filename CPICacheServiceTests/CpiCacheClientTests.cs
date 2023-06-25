@@ -92,7 +92,7 @@ namespace CPICacheServiceTests
             var seriesId = "LAUCN040010000000005";
             var year = "2022";
             var month = "June";
-            var expectedCacheKey = $"CPI_{seriesId}_{year}_{month}";
+            var expectedCacheKey = $"CPI_{seriesId}_{year}_{month.ToUpper()}";
 
             var cpiCacheClient = new CacheClient(_memoryCache, _validator);
 

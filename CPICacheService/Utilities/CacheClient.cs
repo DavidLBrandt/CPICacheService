@@ -45,7 +45,7 @@ namespace CPICacheService.Utilities
             if (!_validator.IsValidMonth(month))
                 throw new ArgumentException("Invlaid month.");
 
-            return $"CPI_{seriesId}_{year}_{month}";
+            return $"CPI_{seriesId}_{year}_{month.ToUpper()}";
         }
     }
 }
