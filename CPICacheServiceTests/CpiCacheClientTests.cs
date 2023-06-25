@@ -1,10 +1,11 @@
-﻿namespace CPICacheServiceTests
+﻿using CPICacheService.Models;
+using CPICacheService.Utilities;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+
+namespace CPICacheServiceTests
 {
-    using CPICacheService.Models;
-    using CPICacheService.Utilities;
-    using Microsoft.Extensions.Caching.Memory;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
 
     [TestClass]
     public class CpiCacheClientTests
